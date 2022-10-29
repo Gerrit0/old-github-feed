@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Old Feed
 // @namespace    https://gerritbirkeland.com/
-// @version      0.1
+// @version      0.2
 // @updateURL    https://raw.githubusercontent.com/Gerrit0/old-github-feed/main/old-feed.user.js
 // @downloadURL  https://raw.githubusercontent.com/Gerrit0/old-github-feed/main/old-feed.user.js
 // @description  Replaces the "For you" feed with the old one
@@ -14,14 +14,14 @@
 (function() {
     'use strict';
     const observer = new MutationObserver(fixDashboard);
-    let dashboardCache = "<p>Updating...</p>" + (localStorage.getItem("dashboardCache") || "");
+    let dashboardCache = `<p style="margin:0">Updating...</p>${localStorage.getItem("dashboardCache") || ""}`;
     fixDashboard();
     updateDashboard();
 
     function fixDashboard() {
         if (location.pathname === '/') {
             observer.disconnect();
-            const dashboard = document.getElementById('dashboard');
+            const dashboard = document.getElementById('dashboard-feed-frame');
             dashboard.innerHTML = dashboardCache;
             observer.observe(dashboard, { subtree: true, childList: true });
         }
@@ -31,7 +31,7 @@
         fetch("https://github.com/dashboard-feed", { headers: { "X-Requested-With": "XMLHttpRequest" } })
             .then(r => r.text())
             .then(html => {
-                dashboardCache = html;
+                dashboardCache = `<p style="margin:0">&nbsp;</p>${html}`;
                 localStorage.setItem("dashboardCache", html);
                 fixDashboard();
             });
