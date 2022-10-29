@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Old Feed
 // @namespace    https://gerritbirkeland.com/
-// @version      0.3
+// @version      0.4
 // @updateURL    https://raw.githubusercontent.com/Gerrit0/old-github-feed/main/old-feed.user.js
 // @downloadURL  https://raw.githubusercontent.com/Gerrit0/old-github-feed/main/old-feed.user.js
 // @description  Replaces the "For you" feed with the old one
@@ -14,7 +14,11 @@
 
 (function() {
     'use strict';
-    const observer = new MutationObserver(fixDashboard);
+    const observer = new MutationObserver(() => {
+        if (displayedDashboard.querySelector(".js-feed-item-component")) {
+            fixDashboard();
+        }
+    });
     // #dashboard-feed-frame for those not on A/B, .js-feed-container for those stuck with it.
     const displayedDashboard = document.querySelector("#dashboard-feed-frame") || document.querySelector(".js-feed-container");
 
