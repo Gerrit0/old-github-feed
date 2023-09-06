@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Old Feed
 // @namespace    https://gerritbirkeland.com/
-// @version      0.4
+// @version      0.5
 // @updateURL    https://raw.githubusercontent.com/Gerrit0/old-github-feed/main/old-feed.user.js
 // @downloadURL  https://raw.githubusercontent.com/Gerrit0/old-github-feed/main/old-feed.user.js
 // @description  Replaces the "For you" feed with the old one
@@ -15,12 +15,11 @@
 (function() {
     'use strict';
     const observer = new MutationObserver(() => {
-        if (displayedDashboard.querySelector(".js-feed-item-component")) {
+        if (document.querySelector("#dashboard > div > feed-container > div[data-target=\"feed-container.content\"]")) {
             fixDashboard();
         }
     });
-    // #dashboard-feed-frame for those not on A/B, .js-feed-container for those stuck with it.
-    const displayedDashboard = document.querySelector("#dashboard-feed-frame") || document.querySelector(".js-feed-container");
+    const displayedDashboard = document.querySelector("#dashboard > div > feed-container > div[data-target=\"feed-container.content\"]");
 
     const dashboardContents = document.createElement("template")
     dashboardContents.innerHTML = `<p style="margin:0">Updating...</p>${localStorage.getItem("dashboardCache") || ""}`;
