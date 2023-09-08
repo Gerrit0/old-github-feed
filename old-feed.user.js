@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Old Feed
 // @namespace    https://gerritbirkeland.com/
-// @version      0.5
+// @version      0.6
 // @updateURL    https://raw.githubusercontent.com/Gerrit0/old-github-feed/main/old-feed.user.js
 // @downloadURL  https://raw.githubusercontent.com/Gerrit0/old-github-feed/main/old-feed.user.js
 // @description  Replaces the "For you" feed with the old one
@@ -15,11 +15,15 @@
 (function() {
     'use strict';
     const observer = new MutationObserver(() => {
-        if (document.querySelector("#dashboard > div > feed-container > div[data-target=\"feed-container.content\"]")) {
+        if (document.querySelector("feed-container")) {
             fixDashboard();
         }
     });
-    const displayedDashboard = document.querySelector("#dashboard > div > feed-container > div[data-target=\"feed-container.content\"]");
+    const feedContainer = document.querySelector(".feed-content");
+    feedContainer.classList.remove("flex-justify-center");
+    feedContainer.style.maxWidth="100vw";
+    const feedContent = feedContainer.querySelector(".feed-main");
+    feedContent.style.maxWidth="100vw";
 
     const dashboardContents = document.createElement("template")
     dashboardContents.innerHTML = `<p style="margin:0">Updating...</p>${localStorage.getItem("dashboardCache") || ""}`;
@@ -37,7 +41,7 @@
     }, 60000);
 
     function preventChanges() {
-        observer.observe(displayedDashboard, { subtree: true, childList: true });
+        observer.observe(feedContent, { subtree: true, childList: true });
     }
 
     function allowChanges() {
@@ -46,10 +50,10 @@
 
     function fixDashboard() {
         allowChanges();
-        displayedDashboard.innerHTML = dashboardContents.innerHTML;
+        feedContent.innerHTML = dashboardContents.innerHTML;
         preventChanges();
 
-        const loadMoreButton = displayedDashboard.querySelector(".ajax-pagination-btn");
+        const loadMoreButton = feedContent.querySelector(".ajax-pagination-btn");
         loadMoreButton?.addEventListener("click", (event) => {
             allowChanges();
             loadMoreButton.textContent = loadMoreButton.dataset.disableWith;
