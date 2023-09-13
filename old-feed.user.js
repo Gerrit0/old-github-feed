@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Old Feed
 // @namespace    https://gerritbirkeland.com/
-// @version      0.6
+// @version      0.7
 // @updateURL    https://raw.githubusercontent.com/Gerrit0/old-github-feed/main/old-feed.user.js
 // @downloadURL  https://raw.githubusercontent.com/Gerrit0/old-github-feed/main/old-feed.user.js
 // @description  Replaces the "For you" feed with the old one
@@ -14,19 +14,17 @@
 
 (function() {
     'use strict';
-    const observer = new MutationObserver(() => {
-        if (document.querySelector("feed-container")) {
-            fixDashboard();
-        }
-    });
+    const OLD_ID=`old_gh_feed_${(Math.random() * 1e10)|0}`
+    const observer = new MutationObserver(fixDashboard);
+
     const feedContainer = document.querySelector(".feed-content");
     feedContainer.classList.remove("flex-justify-center");
     feedContainer.style.maxWidth="100vw";
-    const feedContent = feedContainer.querySelector(".feed-main");
-    feedContent.style.maxWidth="100vw";
+    const feedColumn = feedContainer.querySelector(".feed-main");
+    feedColumn.style.maxWidth="100vw";
 
     const dashboardContents = document.createElement("template")
-    dashboardContents.innerHTML = `<p style="margin:0">Updating...</p>${localStorage.getItem("dashboardCache") || ""}`;
+    dashboardContents.innerHTML = `<div id="${OLD_ID}"><p style="margin:0">Updating...</p>${localStorage.getItem("dashboardCache") || ""}</div>`;
     let nextPage = 1;
 
     fixDashboard();
@@ -41,7 +39,7 @@
     }, 60000);
 
     function preventChanges() {
-        observer.observe(feedContent, { subtree: true, childList: true });
+        observer.observe(feedColumn, { subtree: true, childList: true });
     }
 
     function allowChanges() {
@@ -50,34 +48,39 @@
 
     function fixDashboard() {
         allowChanges();
-        feedContent.innerHTML = dashboardContents.innerHTML;
+        const feed = document.querySelector("#dashboard feed-container") || document.querySelector(`#${OLD_ID}`);
+        if (feed) {
+            feed.replaceWith(dashboardContents.content.cloneNode(true));
+
+            const loadMoreButton = feedColumn.querySelector(".ajax-pagination-btn");
+            loadMoreButton?.addEventListener("click", (event) => {
+                allowChanges();
+                loadMoreButton.textContent = loadMoreButton.dataset.disableWith;
+                loadMoreButton.disabled = true;
+                preventChanges();
+                fetchDashboard();
+                event.preventDefault();
+            });
+        }
         preventChanges();
 
-        const loadMoreButton = feedContent.querySelector(".ajax-pagination-btn");
-        loadMoreButton?.addEventListener("click", (event) => {
-            allowChanges();
-            loadMoreButton.textContent = loadMoreButton.dataset.disableWith;
-            loadMoreButton.disabled = true;
-            preventChanges();
-            fetchDashboard();
-            event.preventDefault();
-        });
+
     }
 
     function fetchDashboard() {
         fetch(`https://github.com/dashboard-feed?page=${nextPage++}`, { headers: { "X-Requested-With": "XMLHttpRequest" } })
             .then(r => r.text())
             .then(html => {
-                if (nextPage === 2) {
-                    dashboardContents.innerHTML = `<p style="margin:0">&nbsp;</p>${html}`;
-                    localStorage.setItem("dashboardCache", html);
-                } else {
-                    dashboardContents.innerHTML += html;
-                    // GitHub's API only ever returns 2 pages of results, so no point in showing the load more button.
-                    const updateForm = dashboardContents.content.querySelector('.ajax-pagination-form');
-                    updateForm.remove();
-                }
-                fixDashboard();
-            });
+            if (nextPage === 2) {
+                dashboardContents.innerHTML = `<div id="${OLD_ID}"><p style="margin:0">&nbsp;</p>${html}</div>`;
+                localStorage.setItem("dashboardCache", html);
+            } else {
+                dashboardContents.innerHTML += html;
+                // GitHub's API only ever returns 2 pages of results, so no point in showing the load more button.
+                const updateForm = dashboardContents.content.querySelector('.ajax-pagination-form');
+                updateForm.remove();
+            }
+            fixDashboard();
+        });
     }
 })();
