@@ -32,13 +32,6 @@
     const followingFeedWrapper = document.createElement("div");
     followingFeedWrapper.innerHTML = localStorage.getItem("dashboardCache") || "";
     feedColumn.prepend(followingFeedWrapper);
-    const loadMoreButton = followingFeedWrapper.querySelector(".ajax-pagination-btn");
-    loadMoreButton?.addEventListener("click", (event) => {
-        loadMoreButton.textContent = loadMoreButton.dataset.disableWith;
-        loadMoreButton.disabled = true;
-        fetchDashboard();
-        event.preventDefault();
-    });
 
     const picker = document.createElement("div");
     picker.classList.add("color-border-default");
@@ -62,31 +55,26 @@
     });
     picker.querySelector(`[data-show=${localStorage.getItem("dashboardActiveButton") || "following"}]`).click();
 
-    let nextPage = 1;
+    let userHasLoadedMore = false;
     fetchDashboard();
 
     // GitHub updated the feed every minute unless the user has loaded more, so we'll do the same.
     setInterval(() => {
-        if (nextPage === 2) {
-            nextPage--;
+        if (userHasLoadedMore === false) {
             fetchDashboard();
         }
     }, 60000);
 
     function fetchDashboard() {
-        fetch(`https://github.com/dashboard-feed?page=${nextPage++}`, { headers: { "X-Requested-With": "XMLHttpRequest" } })
+        fetch(`https://github.com/dashboard-feed?page=1`, { headers: { "X-Requested-With": "XMLHttpRequest" } })
             .then(r => r.text())
             .then(html => {
             loadingIndicator.textContent = "";
-            if (nextPage === 2) {
-                followingFeedWrapper.innerHTML = html;
-                localStorage.setItem("dashboardCache", html);
-            } else {
-                followingFeedWrapper.innerHTML += html;
-                // GitHub's API only ever returns 2 pages of results, so no point in showing the load more button.
-                const updateForm = followingFeedWrapper.querySelector('.ajax-pagination-form');
-                updateForm.remove();
-            }
+            followingFeedWrapper.innerHTML = html;
+            followingFeedWrapper.querySelector(".ajax-pagination-btn").addEventListener("click", () => {
+                userHasLoadedMore = true;
+            });
+            localStorage.setItem("dashboardCache", html);
         });
     }
 })();
