@@ -74,7 +74,14 @@
             followingFeedWrapper.querySelector(".ajax-pagination-btn").addEventListener("click", () => {
                 userHasLoadedMore = true;
             });
-            localStorage.setItem("dashboardCache", html);
+            // Apply pretty paddings for feeds.
+            followingFeedWrapper.querySelectorAll(".body > .Details > .py-4, .body > .py-4").forEach((e) => {
+                e.classList.remove("py-4");
+                e.classList.add("py-3");
+            });
+            followingFeedWrapper.querySelector(".body > .Details > div").style.setProperty('padding-top', 'var(--base-size-4, 4px)', 'important');
+            // Saving the edited content for the cache.
+            localStorage.setItem("dashboardCache", followingFeedWrapper.innerHTML);
         });
     }
 })();
