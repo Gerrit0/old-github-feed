@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Old Feed
 // @namespace    https://gerritbirkeland.com/
-// @version      0.9
+// @version      0.10
 // @updateURL    https://raw.githubusercontent.com/Gerrit0/old-github-feed/main/old-feed.user.js
 // @downloadURL  https://raw.githubusercontent.com/Gerrit0/old-github-feed/main/old-feed.user.js
 // @description  Restores the Following/For You buttons to let you pick your own feed
