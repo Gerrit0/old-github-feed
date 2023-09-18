@@ -75,11 +75,11 @@
                 userHasLoadedMore = true;
             });
             // Apply pretty paddings for feeds.
-            followingFeedWrapper.querySelectorAll(".body > .Details > .py-4, .body > .py-4").forEach((e) => {
+            followingFeedWrapper.querySelector(".body .py-4").style.setProperty('padding-top', 'var(--base-size-4, 4px)', 'important');
+            followingFeedWrapper.querySelectorAll(".body .py-4").forEach((e) => {
                 e.classList.remove("py-4");
                 e.classList.add("py-3");
             });
-            followingFeedWrapper.querySelector(".body > .Details > div").style.setProperty('padding-top', 'var(--base-size-4, 4px)', 'important');
             // Saving the edited content for the cache.
             localStorage.setItem("dashboardCache", followingFeedWrapper.innerHTML);
         });
