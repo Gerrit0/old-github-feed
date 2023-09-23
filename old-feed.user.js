@@ -80,6 +80,26 @@
                 e.classList.remove("py-4");
                 e.classList.add("py-3");
             });
+            /// Apply same colors for feeds.
+            followingFeedWrapper.querySelectorAll("div.Box.color-bg-overlay").forEach((e) => {
+                e.classList.remove("color-bg-overlay");
+                e.classList.remove("color-shadow-medium");
+                e.classList.add("feed-item-content");
+                e.classList.add("border");
+                e.classList.add("color-border-default");
+                e.classList.add("color-shadow-small");
+                e.classList.add("rounded-2");
+                const markdownBody = e.querySelector("div.color-fg-muted.comment-body.markdown-body");
+                if (markdownBody) {
+                    markdownBody.classList.remove("color-fg-muted");
+                }
+            });
+            /// Apply same foreground color for texts.
+            followingFeedWrapper.querySelectorAll(".body > div > div > div.color-fg-muted").forEach((e) => {
+                if (!e.nextElementSibling) {
+                    e.querySelector("div").classList.add("color-fg-default");
+                }
+            });
             // Saving the edited content for the cache.
             localStorage.setItem("dashboardCache", followingFeedWrapper.innerHTML);
         });
