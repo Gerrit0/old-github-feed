@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Old Feed
 // @namespace    https://gerritbirkeland.com/
-// @version      0.11
+// @version      0.12
 // @updateURL    https://raw.githubusercontent.com/Gerrit0/old-github-feed/main/old-feed.user.js
 // @downloadURL  https://raw.githubusercontent.com/Gerrit0/old-github-feed/main/old-feed.user.js
 // @description  Restores the Following/For You buttons to let you pick your own feed
@@ -29,14 +29,16 @@
         return;
     }
 
+    const news = document.querySelector("#dashboard .news");
+
     const followingFeedWrapper = document.createElement("div");
     followingFeedWrapper.innerHTML = localStorage.getItem("dashboardCache") || "";
-    feedColumn.prepend(followingFeedWrapper);
+    news.appendChild(followingFeedWrapper);
 
     const picker = document.createElement("div");
     picker.classList.add("color-border-default");
     picker.style = "border-bottom: 1px solid; margin-bottom: 1em";
-    feedColumn.prepend(picker);
+    news.insertBefore(picker, feedContainer);
     picker.innerHTML = `<button class="Button" data-show="following">Following</button><button class="Button" data-show="forYou">For you</button><span style="float:right">Loading...</span>`;
     const loadingIndicator = picker.querySelector("span");
 

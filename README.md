@@ -12,6 +12,10 @@ If you can't install user scripts, you can use https://github.com/dashboard-feed
 
 ## Change Log
 
+### v0.12 (2023-10-07)
+
+- Adjusted page insert to fix display on very narrow (mobile) screens (@Gerrit0)
+
 ### v0.11 (2023-09-22)
 
 - Update styling of feed entries to more closely match GitHub's colors (@AlexV525)
