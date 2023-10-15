@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Old Feed
 // @namespace    https://gerritbirkeland.com/
-// @version      0.12
+// @version      0.13
 // @updateURL    https://raw.githubusercontent.com/Gerrit0/old-github-feed/main/old-feed.user.js
 // @downloadURL  https://raw.githubusercontent.com/Gerrit0/old-github-feed/main/old-feed.user.js
 // @description  Restores the Following/For You buttons to let you pick your own feed
@@ -12,17 +12,18 @@
 // @grant        none
 // ==/UserScript==
 
-(function() {
-    'use strict';
+(function () {
+    "use strict";
+
     const feedContainer = document.querySelector("#dashboard feed-container");
     // Apparently if this isn't true, then a SSO popup is being shown, so don't do anything.
     if (!feedContainer) return;
 
     const columnContainer = document.querySelector(".feed-content");
     columnContainer.classList.remove("flex-justify-center");
-    columnContainer.style.maxWidth="100vw";
+    columnContainer.style.maxWidth = "100vw";
     const feedColumn = columnContainer.querySelector(".feed-main");
-    feedColumn.style.maxWidth="100vw";
+    feedColumn.style.maxWidth = "100vw";
 
     if (feedColumn.children.length != 2) {
         console.warn("[Old Feed] Page does not have expected structure, please report an issue");
@@ -36,23 +37,46 @@
     news.appendChild(followingFeedWrapper);
 
     const picker = document.createElement("div");
-    picker.classList.add("color-border-default");
-    picker.style = "border-bottom: 1px solid; margin-bottom: 1em";
     news.insertBefore(picker, feedContainer);
-    picker.innerHTML = `<button class="Button" data-show="following">Following</button><button class="Button" data-show="forYou">For you</button><span style="float:right">Loading...</span>`;
-    const loadingIndicator = picker.querySelector("span");
+    picker.innerHTML = `
+        <div class="mb-3">
+            <nav class="overflow-hidden UnderlineNav">
+                <ul class="UnderlineNav-body">
+                    <li class="d-inline-flex">
+                        <a data-show="following" class="feed-button UnderlineNav-item selected">
+                            <span data-content="Following">Following</span>
+                        </a>
+                    </li>
+                    <li class="d-inline-flex">
+                        <a data-show="forYou" class="feed-button UnderlineNav-item">
+                            <span data-content="For You">For You</span>
+                        </a>
+                    </li>
+                </ul>
+                <ul class="UnderlineNav-body">
+                    <li class="d-inline-flex">
+                        <span class="loader">Loading...</span>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    `;
+
+    const loadingIndicator = picker.querySelector(".loader");
 
     const tabs = { following: followingFeedWrapper, forYou: feedContainer };
     picker.addEventListener("click", event => {
-        if (event.target.tagName !== "BUTTON") return;
-        for (const [name, el] of Object.entries(tabs)) {
+        if (event.target.tagName !== "A") return;
+
+        Object.entries(tabs).forEach(([name, el]) => {
             el.style.display = name === event.target.dataset.show ? "block" : "none";
-        }
-        for (const button of picker.querySelectorAll("button")) {
-            button.style = button === event.target
-                ? "border-radius: 0; border-bottom: 1px solid var(--color-primer-border-active);"
-                : "";
-        }
+        });
+
+        picker.querySelectorAll(".feed-button").forEach(button => {
+            button.classList.remove("selected");
+        });
+        event.target.classList.add("selected");
+
         localStorage.setItem("dashboardActiveButton", event.target.dataset.show);
     });
     picker.querySelector(`[data-show=${localStorage.getItem("dashboardActiveButton") || "following"}]`).click();
