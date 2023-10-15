@@ -12,8 +12,8 @@
 // @grant        none
 // ==/UserScript==
 
-(function() {
-    'use strict';
+(function () {
+    "use strict";
 
     const feedContainer = document.querySelector("#dashboard feed-container");
     // Apparently if this isn't true, then a SSO popup is being shown, so don't do anything.
@@ -21,12 +21,9 @@
 
     const columnContainer = document.querySelector(".feed-content");
     columnContainer.classList.remove("flex-justify-center");
-    columnContainer.style.maxWidth="unset";
+    columnContainer.style.maxWidth = "100vw";
     const feedColumn = columnContainer.querySelector(".feed-main");
-    feedColumn.style.maxWidth="100%";
-    const sidebar = document.querySelector('.feed-right-sidebar');
-    sidebar.style.maxWidth = "unset";
-    sidebar.style.width = "900px";
+    feedColumn.style.maxWidth = "100vw";
 
     if (feedColumn.children.length != 2) {
         console.warn("[Old Feed] Page does not have expected structure, please report an issue");
