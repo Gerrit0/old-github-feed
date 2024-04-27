@@ -4,7 +4,7 @@
 // @version      0.13
 // @updateURL    https://raw.githubusercontent.com/Gerrit0/old-github-feed/main/old-feed.user.js
 // @downloadURL  https://raw.githubusercontent.com/Gerrit0/old-github-feed/main/old-feed.user.js
-// @description  Restores the Following/For You buttons to let you pick your own feed
+// @description  Restores the Following/For You buttons to let you pick your feed
 // @author       Gerrit Birkeland
 // @match        https://github.com/
 // @match        https://github.com/dashboard
@@ -16,7 +16,7 @@
     "use strict";
 
     const feedContainer = document.querySelector("#dashboard feed-container");
-    // Apparently if this isn't true, then a SSO popup is being shown, so don't do anything.
+    // Apparently if this isn't true, then an SSO popup is being shown, so don't do anything.
     if (!feedContainer) return;
 
     const columnContainer = document.querySelector(".feed-content");
@@ -84,7 +84,7 @@
     let userHasLoadedMore = false;
     fetchDashboard();
 
-    // GitHub updated the feed every minute unless the user has loaded more, so we'll do the same.
+    // GitHub updates the feed every minute unless the user has loaded more, so we'll do the same.
     setInterval(() => {
         if (userHasLoadedMore === false) {
             fetchDashboard();
@@ -106,7 +106,19 @@
                 e.classList.remove("py-4");
                 e.classList.add("py-3");
             });
-            /// Apply same colors for feeds.
+            // Apply the same foreground color for texts.
+            followingFeedWrapper.querySelectorAll(".body > div > div > div.color-fg-muted").forEach((e) => {
+                if (!e.nextElementSibling) {
+                    e.querySelector("div").classList.add("color-fg-default");
+                }
+            });
+            // Apply box for non-boxed items.
+            followingFeedWrapper.querySelectorAll(".body > .d-flex > .d-flex > div > div[class=color-fg-default]").forEach((e) => {
+                e.classList.add("Box");
+                e.classList.add("p-3");
+                e.classList.add("mt-2");
+            });
+            // Apply the same colors for feeds.
             followingFeedWrapper.querySelectorAll("div.Box.color-bg-overlay").forEach((e) => {
                 e.classList.remove("color-bg-overlay");
                 e.classList.remove("color-shadow-medium");
@@ -118,12 +130,6 @@
                 const markdownBody = e.querySelector("div.color-fg-muted.comment-body.markdown-body");
                 if (markdownBody) {
                     markdownBody.classList.remove("color-fg-muted");
-                }
-            });
-            /// Apply same foreground color for texts.
-            followingFeedWrapper.querySelectorAll(".body > div > div > div.color-fg-muted").forEach((e) => {
-                if (!e.nextElementSibling) {
-                    e.querySelector("div").classList.add("color-fg-default");
                 }
             });
             // Saving the edited content for the cache.
