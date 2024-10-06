@@ -66,18 +66,21 @@
 
     const tabs = { following: followingFeedWrapper, forYou: feedContainer };
     picker.addEventListener("click", event => {
-        if (event.target.tagName !== "A") return;
+        const isChildSpanClicked = event.target.tagName === "SPAN" && event.target.parentNode.classList.contains("feed-button") && event.target.parentNode.tagName === "A"
+        let target = isChildSpanClicked ? event.target.parentNode : event.target;
+
+        if (target.tagName !== "A") return;
 
         Object.entries(tabs).forEach(([name, el]) => {
-            el.style.display = name === event.target.dataset.show ? "block" : "none";
+            el.style.display = name === target.dataset.show ? "block" : "none";
         });
 
         picker.querySelectorAll(".feed-button").forEach(button => {
             button.classList.remove("selected");
         });
-        event.target.classList.add("selected");
+        target.classList.add("selected");
 
-        localStorage.setItem("dashboardActiveButton", event.target.dataset.show);
+        localStorage.setItem("dashboardActiveButton", target.dataset.show);
     });
     picker.querySelector(`[data-show=${localStorage.getItem("dashboardActiveButton") || "following"}]`).click();
 
