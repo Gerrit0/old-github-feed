@@ -12,6 +12,10 @@ If you can't install user scripts, you can use https://github.com/dashboard-feed
 
 ## Change Log
 
+### v0.16 (2024-10-08)
+
+- Update favicon to use GitHub instead of Google (@xPaw)
+
 ### v0.15 (2024-10-06)
 
 - Update to handle GitHub style/layout change (@KMohZaid)
