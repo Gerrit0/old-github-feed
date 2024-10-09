@@ -8,7 +8,7 @@
 // @author       Gerrit Birkeland
 // @match        https://github.com/
 // @match        https://github.com/dashboard
-// @icon         https://www.google.com/s2/favicons?sz=64&domain=github.com
+// @icon         https://github.com/favicon.ico
 // @grant        none
 // ==/UserScript==
 
