@@ -19,6 +19,10 @@
     // Apparently if this isn't true, then an SSO popup is being shown, so don't do anything.
     if (!feedContainer) return;
 
+    // Remove Copilot
+    const copilot = document.querySelector('.copilotPreview__container');
+    if (copilot) copilot.remove();
+
     const columnContainer = document.querySelector(".feed-content");
     columnContainer.classList.remove("flex-justify-center");
     columnContainer.style.maxWidth = "100vw";
