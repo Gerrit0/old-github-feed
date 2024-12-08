@@ -20,7 +20,7 @@
     if (!feedContainer) return;
 
     // Remove Copilot
-    const copilot = document.querySelector('.copilotPreview__container');
+    const copilot = document.querySelector(".copilotPreview__container");
     if (copilot) copilot.remove();
 
     const columnContainer = document.querySelector(".feed-content");
@@ -108,7 +108,7 @@
                 userHasLoadedMore = true;
             });
             // Apply pretty paddings for feeds.
-            followingFeedWrapper.querySelector(".body .py-4").style.setProperty('padding-top', 'var(--base-size-4, 4px)', 'important');
+            followingFeedWrapper.querySelector(".body .py-4").style.setProperty("padding-top", "var(--base-size-4, 4px)", "important");
             followingFeedWrapper.querySelectorAll(".body .py-4").forEach((e) => {
                 e.classList.remove("py-4");
                 e.classList.add("py-3");
